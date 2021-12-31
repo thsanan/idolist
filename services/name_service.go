@@ -9,26 +9,24 @@ import (
 )
 
 type NameService interface {
-	GetAlphabetNumber() []utils.Shaphabet
-	GetAlphabetKalakini() []string
-	GetAlphabetShadows() []utils.Shaphabet
-	SumAlphabetNumber() int
-	SumAlShadowNumber() int
+	GetAlphabetNumber(title string) []utils.Shaphabet
+	GetAlphabetKalakini(dayBirth string, title string) []string
+	GetAlphabetShadows(title string) []utils.Shaphabet
+	SumAlphabetNumber(title string) int
+	SumAlShadowNumber(title string) int
 }
 
 type Name struct {
-	repo  repositories.AlphabetRepo
-	title string
-	day   string
+	repo repositories.AlphabetRepo
 }
 
-func NewName(repo repositories.AlphabetRepo, title string, day string) NameService {
-	return Name{repo: repo, title: title, day: day}
+func NewName(repo repositories.AlphabetRepo) NameService {
+	return Name{repo: repo}
 }
 
-func (service Name) GetAlphabetNumber() []utils.Shaphabet {
+func (service Name) GetAlphabetNumber(title string) []utils.Shaphabet {
 	var pairs []utils.Shaphabet
-	ss := strings.Split(service.title, "")
+	ss := strings.Split(title, "")
 	for _, s := range ss {
 		for key, value := range service.repo.GetAlphabets() {
 			if key == s {
@@ -44,14 +42,14 @@ func (service Name) GetAlphabetNumber() []utils.Shaphabet {
 
 }
 
-func (service Name) GetAlphabetKalakini() []string {
+func (service Name) GetAlphabetKalakini(dayBirth string, title string) []string {
 	var ks []string
 
 	for day, kalakiniList := range service.repo.GetAlphabetKalakini() {
 
-		if service.day == day {
+		if dayBirth == day {
 
-			for _, s := range strings.Split(service.title, "") {
+			for _, s := range strings.Split(title, "") {
 
 				for _, k := range strings.Split(kalakiniList, "") {
 
@@ -71,11 +69,11 @@ func (service Name) GetAlphabetKalakini() []string {
 
 }
 
-func (service Name) GetAlphabetShadows() []utils.Shaphabet {
+func (service Name) GetAlphabetShadows(title string) []utils.Shaphabet {
 
 	var pairs []utils.Shaphabet
 
-	ss := strings.Split(service.title, "")
+	ss := strings.Split(title, "")
 	for _, s := range ss {
 		for key, value := range service.repo.GetAlphaShadow() {
 			if key == s {
@@ -92,9 +90,9 @@ func (service Name) GetAlphabetShadows() []utils.Shaphabet {
 
 }
 
-func (service Name) SumAlphabetNumber() int {
+func (service Name) SumAlphabetNumber(title string) int {
 	var sum int
-	ss := strings.Split(service.title, "")
+	ss := strings.Split(title, "")
 	for _, s := range ss {
 		for key, value := range service.repo.GetAlphabets() {
 			if key == s {
@@ -108,9 +106,9 @@ func (service Name) SumAlphabetNumber() int {
 
 }
 
-func (service Name) SumAlShadowNumber() int {
+func (service Name) SumAlShadowNumber(title string) int {
 	var sum int
-	ss := strings.Split(service.title, "")
+	ss := strings.Split(title, "")
 	for _, s := range ss {
 		for key, value := range service.repo.GetAlphaShadow() {
 			if key == s {
